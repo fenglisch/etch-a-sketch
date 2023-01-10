@@ -94,8 +94,8 @@ function startTimer() {
             ++secs;
             timer.textContent = "Time: " + secs + " sec"
             if(stopTimer == true){
-                // clearInterval(id);
-               }
+                clearInterval(id);
+            }
         },
             1000
         );
