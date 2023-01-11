@@ -1,5 +1,6 @@
 // Create 8 x 8 grid
 
+let body = document.querySelector("body");
 let btnCreateGrid = document.querySelector(".create-grid")
 let instructions = document.querySelector(".instructions")
 const container = document.querySelector(".container");
@@ -19,7 +20,8 @@ let id;
 
 function askForGridSize() {
     userInput = +prompt("How many rows and columns shall the grid have?", "Enter one (!) number up to 100")
-    if ( userInput < 1 || userInput > 100 || userInput == NaN) {
+    if (userInput == "") return;    
+    else if ( userInput < 1 || userInput > 100 || !+userInput) {
         alert("Your input was invalid. Please try again")
         askForGridSize()
     }
@@ -29,10 +31,14 @@ function askForGridSize() {
 }
 
 function createGrid() {
+    startTimer();
+    isTimerRunning = true;
     if (userInput <= 10) {
-        instructions.innerHTML = "<p>Make all the squares black as fast as you can!</p>"
+        instructions.innerHTML = "<p>Make all the squares <strong>black</strong> as fast as you can!</p>"
     }
-    else { instructions.innerHTML = "<p>Colorize all the squares as fast as you can!</p>" }
+    else {
+        instructions.innerHTML = "<p><strong>Colorize</strong> all the squares as fast as you can!</p>"
+    }
     container.innerHTML = "";
     secs = 0;
     isTimerRunning = false;
@@ -54,20 +60,23 @@ function createGrid() {
         }
     }
     allCells = document.querySelectorAll(".cell")
-    assignAllCells()  
+    allCells.forEach((cell) => {
+        if (gridSize < 50) {
+                cell.classList.add("bordered"); 
+            }
+        }
+    )
+    assignEventListenerToAllCells()  
 }
 
-function assignAllCells() {
+function assignEventListenerToAllCells() {
     allCells.forEach((cell) => {
-        cell.addEventListener("mouseover", changeColors)
-    })
+        cell.addEventListener("mouseover", changeColors);
+        }
+    )
 }
 
 function changeColors (e) {
-    if (isTimerRunning == false) {
-        startTimer();
-        isTimerRunning = true;
-    }
     if (!e.target.style.backgroundColor) {
         e.target.style.cssText = `background-color: rgb(${getRandomRgbValue()},${getRandomRgbValue()},${getRandomRgbValue()});`;
         if (gridSize > 10) {
@@ -86,6 +95,19 @@ function changeColors (e) {
 
     }
 }
+
+document.addEventListener("keydown", function(e) {
+    if (e.code == "Space") {
+        allCells.forEach(function(cell) {
+        if (!cell.style.backgroundColor) {
+            cell.style.cssText = `background-color: rgb(${getRandomRgbValue()},${getRandomRgbValue()},${getRandomRgbValue()});`;
+        }
+    })
+    body.removeChild(timer);
+    body.removeChild(counter);
+    instructions.innerHTML = "<p>No time for playing, ey? But it's more beautiful if you create it yourself.<br>Refresh the page to play again.</p>"
+    }
+})
 
 
 
